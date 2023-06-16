@@ -1,0 +1,22 @@
+{
+  "name": "rs-filemanager",
+  "version": "1.0.0",
+  "description": "RS School task: file manager",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx nodemon",
+    "start": "npm run build && node build/index",
+    "build": "rimraf ./build && npx tsc"
+  },
+  "author": "emp74ark",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "eslint": "^8.43.0",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
+  }
+}
