@@ -10,7 +10,7 @@ export const state = {
   location: rootDir,
 };
 
-greeting(username);
+greeting(state.username);
 
 const inputHandler = (input: Buffer) => {
   const [cmd, ...params] = input.toString().trim().split(' ');
