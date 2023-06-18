@@ -47,7 +47,7 @@ const inputHandler = (input: Buffer) => {
         rm(params);
         break;
       case ('os'):
-        os();
+        os(params);
         break;
       case ('hash'):
         hash(params);
