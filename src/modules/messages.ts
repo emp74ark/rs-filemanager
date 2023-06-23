@@ -18,8 +18,13 @@ export const cmdAlert = (message: string) => {
   console.log(Color.FgYellow, message, Color.Reset);
 };
 
-export const cmdResult = (message: string) => {
-  console.log(Color.FgGreen, message, Color.Reset);
+export const cmdResult = (location: string, message?: any) => {
+  if (message) console.log(message);
+  console.log(
+      Color.FgYellow,
+      `You are currently in ${location}`,
+      Color.Reset,
+  );
 };
 
 export const operationFailed = () => {

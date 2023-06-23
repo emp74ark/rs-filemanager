@@ -22,10 +22,8 @@ export const up = () => {
     return;
   }
 
-  const newLocation = resolve(state.location, '..');
-  state.location = newLocation;
-
-  cmdAlert(`Now you are in: ${newLocation}`);
+  state.location = resolve(state.location, '..');
+  cmdResult(state.location);
 };
 
 export const cd = (params: string[]) => {
@@ -34,10 +32,8 @@ export const cd = (params: string[]) => {
     return;
   }
 
-  const newLocation = resolve(state.location, params[0]);
-  state.location = newLocation; //todo: check if folder exist
-
-  cmdAlert(`Now you are in: ${newLocation}`);
+  state.location = resolve(state.location, params[0]); //todo: check if folder exist
+  cmdResult(state.location);
 };
 
 export const ls = async () => {//todo: add sorting
@@ -55,8 +51,9 @@ export const ls = async () => {//todo: add sorting
     }
 
     console.table(list);
+    cmdResult(state.location);
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 
 };
@@ -70,9 +67,9 @@ export const add = async (params: string[]) => {
   try {
     await writeFile(resolve(state.location, params[0]), '');
 
-    cmdResult(`File "${params[0]}" was created`);
+    cmdResult(state.location, `File "${params[0]}" was created`);
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 };
 
@@ -88,9 +85,10 @@ export const rn = async (params: string[]) => {
         resolve(state.location, params[1]),
     );
 
-    cmdResult(`File "${params[0]}" was renamed to ${params[1]}`);
+    cmdResult(state.location,
+        `File "${params[0]}" was renamed to ${params[1]}`);
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 };
 
@@ -104,9 +102,10 @@ export const cp = async (params: string[]) => {
     const destination = resolve(state.location, params[1], params[0]);
     await copy(resolve(state.location, params[0]), destination);
 
-    cmdResult(`File "${params[0]}" was copied to ${destination}`);
+    cmdResult(state.location,
+        `File "${params[0]}" was copied to ${destination}`);
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 };
 
@@ -122,9 +121,10 @@ export const mv = async (params: string[]) => {
     await copy(source, destination);
     await remove(source);
 
-    cmdResult(`File "${params[0]}" was moved to ${destination}`);
+    cmdResult(state.location,
+        `File "${params[0]}" was moved to ${destination}`);
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 };
 
@@ -138,12 +138,12 @@ export const rm = async (params: string[]) => {
     const info = await stat(target);
     if (info.isFile()) {
       await remove(resolve(state.location, params[0]));
-      cmdResult(`File "${params[0]}" was removed`);
+      cmdResult(state.location, `File "${params[0]}" was removed`);
     } else if (info.isDirectory()) {
       await rmdir(resolve(state.location, params[0]), {recursive: true});
-      cmdResult(`Directory "${params[0]}" was removed`);
+      cmdResult(state.location, `Directory "${params[0]}" was removed`);
     }
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 };

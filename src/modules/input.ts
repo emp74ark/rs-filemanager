@@ -2,12 +2,13 @@ import {cmdAlert, goodBy, greeting, operationFailed} from './messages.js';
 import {add, cd, cp, ls, mv, rm, rn, up} from './fs.js';
 import {cat, compress, decompress, hash} from './files.js';
 import {os} from './os.js';
+import {homedir} from 'os';
 
-const [username, rootDir] = process.argv.slice(2);
+const [username] = process.argv.slice(2);
 export const state = {
   username,
-  rootDir,
-  location: rootDir,
+  rootDir: homedir(),
+  location: homedir(),
 };
 
 greeting(state.username);

@@ -1,9 +1,4 @@
-import {
-  cmdAlert,
-  cmdResult,
-  invalidInput,
-  operationFailed,
-} from './messages.js';
+import {cmdResult, invalidInput, operationFailed} from './messages.js';
 import {resolve} from 'path';
 import {state} from './input.js';
 import {createReadStream, createWriteStream} from 'fs';
@@ -21,10 +16,12 @@ export const cat = async (params: string[]) => {
   try {
     const file = resolve(state.location, params[0]);
     const readStream = await createReadStream(file, 'utf-8');
-    readStream.on('data', (data) => console.log(data));
+    readStream.on('data', (data) => {
+      cmdResult(state.location, data.toString());
+    });
     readStream.on('error', () => invalidInput());
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 };
 
@@ -48,8 +45,9 @@ export const compress = async (params: string[]) => {
           if (e) operationFailed();
         },
     );
+    cmdResult(state.location);
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 };
 
@@ -73,8 +71,9 @@ export const decompress = async (params: string[]) => {
           if (e) operationFailed();
         },
     );
+    cmdResult(state.location);
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 };
 
@@ -87,8 +86,8 @@ export const hash = async (params: string[]) => {
   try {
     const file = await readFile(resolve(state.location, params[0]));
     const hex = createHash('sha256').update(file).digest('hex');
-    cmdResult(hex);
+    cmdResult(state.location, hex);
   } catch (e) {
-    if (e) operationFailed()
+    if (e) operationFailed();
   }
 };

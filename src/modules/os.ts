@@ -1,5 +1,6 @@
 import {arch, cpus, EOL, homedir, userInfo} from 'os';
-import {invalidInput} from './messages.js';
+import {cmdResult, invalidInput} from './messages.js';
+import {state} from './input.js';
 
 export const os = (params: string[]) => {
   if (params.length === 0) {
@@ -9,19 +10,19 @@ export const os = (params: string[]) => {
 
   switch (params[0]) {
     case '--EOL':
-      console.log(EOL.split(''));
+      cmdResult(state.location, EOL.split(''));
       break;
     case '--cpus':
-      console.log(cpus());
+      cmdResult(state.location, cpus());
       break;
     case '--homedir':
-      console.log(homedir());
+      cmdResult(state.location, homedir());
       break;
     case '--username':
-      console.log(userInfo().username);
+      cmdResult(state.location, userInfo().username);
       break;
     case '--architecture':
-      console.log(arch());
+      cmdResult(state.location, arch());
       break;
     default:
       invalidInput(
