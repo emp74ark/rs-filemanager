@@ -1,9 +1,9 @@
 import {arch, cpus, EOL, homedir, userInfo} from 'os';
-import {invalidSyntax} from './messages.js';
+import {invalidInput} from './messages.js';
 
 export const os = (params: string[]) => {
   if (params.length === 0) {
-    invalidSyntax('os [--EOL, --cpus, --homedir, --username, --architecture]');
+    invalidInput('os [--EOL, --cpus, --homedir, --username, --architecture]');
     return;
   }
 
@@ -24,7 +24,7 @@ export const os = (params: string[]) => {
       console.log(arch());
       break;
     default:
-      invalidSyntax(
+      invalidInput(
           'os [--EOL, --cpus, --homedir, --username, --architecture]');
   }
 };

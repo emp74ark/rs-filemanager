@@ -1,4 +1,9 @@
-import {cmdAlert, cmdResult, invalidSyntax} from './messages.js';
+import {
+  cmdAlert,
+  cmdResult,
+  invalidInput,
+  operationFailed,
+} from './messages.js';
 import {resolve} from 'path';
 import {state} from './input.js';
 import {createReadStream, createWriteStream} from 'fs';
@@ -9,7 +14,7 @@ import {createHash} from 'crypto';
 
 export const cat = async (params: string[]) => {
   if (params.length === 0) {
-    invalidSyntax('cat path_to_file');
+    invalidInput('cat path_to_file');
     return;
   }
 
@@ -17,15 +22,15 @@ export const cat = async (params: string[]) => {
     const file = resolve(state.location, params[0]);
     const readStream = await createReadStream(file, 'utf-8');
     readStream.on('data', (data) => console.log(data));
-    readStream.on('error', () => cmdAlert('Invalid input'));
+    readStream.on('error', () => invalidInput());
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 };
 
 export const compress = async (params: string[]) => {
   if (params.length < 2) {
-    invalidSyntax('compress path_to_file path_to_destination');
+    invalidInput('compress path_to_file path_to_destination');
     return;
   }
 
@@ -39,16 +44,18 @@ export const compress = async (params: string[]) => {
         readStream,
         brotli,
         writeStream,
-        (e) => console.log(e),
+        (e) => {
+          if (e) operationFailed();
+        },
     );
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 };
 
 export const decompress = async (params: string[]) => {
   if (params.length < 2) {
-    invalidSyntax('decompress path_to_file path_to_destination');
+    invalidInput('decompress path_to_file path_to_destination');
     return;
   }
 
@@ -62,16 +69,18 @@ export const decompress = async (params: string[]) => {
         readStream,
         brotli,
         writeStream,
-        (e) => console.log(e),
+        (e) => {
+          if (e) operationFailed();
+        },
     );
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 };
 
 export const hash = async (params: string[]) => {
   if (params.length === 0) {
-    invalidSyntax('hash path_to_file');
+    invalidInput('hash path_to_file');
     return;
   }
 
@@ -80,6 +89,6 @@ export const hash = async (params: string[]) => {
     const hex = createHash('sha256').update(file).digest('hex');
     cmdResult(hex);
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 };

@@ -1,4 +1,4 @@
-import {invalidSyntax} from './modules/messages.js';
+import {invalidInput, operationFailed} from './modules/messages.js';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
 import {fork} from 'child_process';
@@ -11,11 +11,11 @@ const userPrompt = async () => {
         if (username) {
             fork(resolve(rootDir, 'modules', 'input'), [username, rootDir])
         } else {
-            throw new SyntaxError();
+            invalidInput('npm run start -- --username=your_username')
         }
     } catch (e) {
-        if (e instanceof SyntaxError) {
-            invalidSyntax('npm run start -- --username=your_username')
+        if (e) {
+            operationFailed()
         }
     }
 }

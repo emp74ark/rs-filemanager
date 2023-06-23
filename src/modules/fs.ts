@@ -9,7 +9,12 @@ import {
   writeFile,
 } from 'fs/promises';
 import {state} from './input.js';
-import {cmdAlert, cmdResult, invalidSyntax} from './messages.js';
+import {
+  cmdAlert,
+  cmdResult,
+  invalidInput,
+  operationFailed,
+} from './messages.js';
 
 export const up = () => {
   if (state.location === state.rootDir) {
@@ -25,7 +30,7 @@ export const up = () => {
 
 export const cd = (params: string[]) => {
   if (params.length === 0) {
-    invalidSyntax('cd path_to_directory');
+    invalidInput('cd path_to_directory');
     return;
   }
 
@@ -51,14 +56,14 @@ export const ls = async () => {//todo: add sorting
 
     console.table(list);
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 
 };
 
 export const add = async (params: string[]) => {
   if (params.length === 0) {
-    invalidSyntax('add new_file_name');
+    invalidInput('add new_file_name');
     return;
   }
 
@@ -67,13 +72,13 @@ export const add = async (params: string[]) => {
 
     cmdResult(`File "${params[0]}" was created`);
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 };
 
 export const rn = async (params: string[]) => {
   if (params.length < 2) {
-    invalidSyntax('rn path_to_file new_filename');
+    invalidInput('rn path_to_file new_filename');
     return;
   }
 
@@ -85,13 +90,13 @@ export const rn = async (params: string[]) => {
 
     cmdResult(`File "${params[0]}" was renamed to ${params[1]}`);
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 };
 
 export const cp = async (params: string[]) => {
   if (params.length < 2) {
-    invalidSyntax('cp path_to_file path_to_new_directory');
+    invalidInput('cp path_to_file path_to_new_directory');
     return;
   }
 
@@ -101,13 +106,13 @@ export const cp = async (params: string[]) => {
 
     cmdResult(`File "${params[0]}" was copied to ${destination}`);
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 };
 
 export const mv = async (params: string[]) => {
   if (params.length < 2) {
-    invalidSyntax('path_to_file path_to_new_directory');
+    invalidInput('path_to_file path_to_new_directory');
     return;
   }
 
@@ -119,13 +124,13 @@ export const mv = async (params: string[]) => {
 
     cmdResult(`File "${params[0]}" was moved to ${destination}`);
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 };
 
 export const rm = async (params: string[]) => {
   if (params.length === 0) {
-    invalidSyntax('rm path_to_file');
+    invalidInput('rm path_to_file');
     return;
   }
   try {
@@ -139,6 +144,6 @@ export const rm = async (params: string[]) => {
       cmdResult(`Directory "${params[0]}" was removed`);
     }
   } catch (e) {
-    console.log(e);
+    if (e) operationFailed()
   }
 };

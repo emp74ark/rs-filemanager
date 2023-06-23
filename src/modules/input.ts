@@ -61,7 +61,6 @@ const inputHandler = (input: Buffer) => {
       default:
         cmdAlert('Invalid input');
     }
-
   } catch (e) {
     if (e) operationFailed();
   }
