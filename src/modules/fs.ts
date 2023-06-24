@@ -15,7 +15,6 @@ import {
   invalidInput,
   operationFailed,
 } from './messages.js';
-import ErrnoException = NodeJS.ErrnoException;
 
 export const up = () => {
   if (state.location === state.rootDir) {

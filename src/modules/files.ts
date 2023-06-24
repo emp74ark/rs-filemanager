@@ -33,7 +33,7 @@ export const compress = async (params: string[]) => {
 
   try {
     const source = resolve(state.location, params[0]);
-    const target = resolve(state.location, params[1]);
+    const target = resolve(state.location, params[1], `${params[0]}.br`);
     const readStream = createReadStream(source);
     const writeStream = createWriteStream(target);
     const brotli = createBrotliCompress();
@@ -59,7 +59,7 @@ export const decompress = async (params: string[]) => {
 
   try {
     const source = resolve(state.location, params[0]);
-    const target = resolve(state.location, params[1]);
+    const target = resolve(state.location, params[1], `${params[0].slice(0, -3)}`);
     const readStream = createReadStream(source);
     const writeStream = createWriteStream(target);
     const brotli = createBrotliDecompress();
