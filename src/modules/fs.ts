@@ -15,6 +15,7 @@ import {
   invalidInput,
   operationFailed,
 } from './messages.js';
+import ErrnoException = NodeJS.ErrnoException;
 
 export const up = () => {
   if (state.location === state.rootDir) {
@@ -26,28 +27,41 @@ export const up = () => {
   cmdResult(state.location);
 };
 
-export const cd = (params: string[]) => {
+export const cd = async (params: string[]) => {
   if (params.length === 0) {
     invalidInput('cd path_to_directory');
     return;
   }
 
-  state.location = resolve(state.location, params[0]); //todo: check if folder exist
-  cmdResult(state.location);
+  const newLocation = resolve(state.location, params[0])
+  try {
+    const info = await stat(newLocation)
+    if (info.isDirectory()) {
+      state.location = resolve(state.location, params[0]);
+      cmdResult(state.location);
+    } else {
+      cmdAlert('Wrong destination')
+    }
+  } catch (e) {
+    if (e) operationFailed()
+  }
 };
 
-export const ls = async () => {//todo: add sorting
+export const ls = async () => {
   try {
     const files = await readdir(state.location);
-    const list: Record<string, string>[] = [];
+    let list: Record<string, string>[] = [];
 
     for (const f of files) {
-      const info = await stat(resolve(state.location, f));
+      const info  = await stat(resolve(state.location, f));
       list.push({
         item: f,
         type: info.isFile() ? 'file' : info.isDirectory() ? 'dir' : 'other',
         size: `${info.size}b`,
       });
+      const dirs = list.filter(e => e.type === 'dir').sort()
+      const files = list.filter(e => e.type === 'file').sort()
+      list = dirs.concat(files)
     }
 
     console.table(list);
